@@ -1,130 +1,129 @@
-Cowrie
-######
+# Containerized Secure SSH Honeypot for Threat Intelligence
 
-What is Cowrie
-*****************************************
+A high-fidelity SSH Honeypot (Cowrie) system engineered with a focus on Deception Technology and Active Defense. This project utilizes containerization to provide a secure, isolated, and highly realistic environment for capturing and analyzing attacker behavior to gather actionable threat intelligence.
 
-Cowrie is a medium to high interaction SSH and Telnet honeypot
-designed to log brute force attacks and the shell interaction
-performed by the attacker. In medium interaction mode (shell) it
-emulates a UNIX system in Python, in high interaction mode (proxy)
-it functions as an SSH and telnet proxy to observe attacker behavior
-to another system. In LLM mode, it uses large language models to
-generate dynamic responses to attacker commands.
+---
 
-`Cowrie <http://github.com/cowrie/cowrie/>`_ is maintained by Michel Oosterhof.
+## 🚀 Project Overview
+This project implements a sophisticated decoy system designed to mimic a production Linux server. By meticulously crafting virtual filesystems and user personas, we maximize attacker "dwell time," allowing for the collection of deep insights into their methodologies without risking actual production assets.
 
-Documentation
-****************************************
+### Key Highlights:
+* **High-Fidelity Deception:** Custom-engineered filesystem (`fs.pickle`) and realistic user environments.
+* **Robust Isolation:** Full containerization using Docker to prevent any potential host compromise.
+* **Scalable Architecture:** Easily deployable as a single node or a distributed Honeynet.
+* **Real-time Analytics:** Integrated pipeline for log aggregation and visualization.
 
-The Documentation can be found `here <https://docs.cowrie.org/en/latest/index.html>`_.
+---
 
-Slack
-*****************************************
+## 🏗️ System Architecture
+The system follows a modular architecture where incoming malicious traffic is isolated and analyzed in real-time.
 
-You can join the Cowrie community at the following `Slack workspace <https://www.cowrie.org/slack/>`_.
+### High-Level System Architecture & Traffic Flow
 
-Features
-*****************************************
+[ Attacker Traffic ] ───► [ Port 2222 (Host) ] ───► [ Isolated Cowrie Container ]
 
-* Choose to run as an emulated shell (default):
-   * Fake filesystem with the ability to add/remove files. A full fake filesystem resembling a Debian 5.0 installation is included
-   * Possibility of adding fake file contents so the attacker can `cat` files such as `/etc/passwd`. Only minimal file contents are included
-   * Cowrie saves files downloaded with wget/curl or uploaded with SFTP and scp for later inspection
+```placeholder
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│             [ PLACEHOLDER: Figure 1 Image ]            │
+│       high_level_system_architecture_traffic_flow.png  │
+│                                                        │
+└────────────────────────────────────────────────────────┘
 
-* Or proxy SSH and telnet to another system
-   * Run as a pure telnet and ssh proxy with monitoring
-   * Or let Cowrie manage a pool of QEMU emulated servers to provide the systems to login to
+Figure 1: High-Level System Architecture & Traffic Flow
+The ELK Data Pipeline
 
-* Or use an LLM backend (experimental):
-   * Use large language models (e.g., OpenAI GPT) to dynamically generate realistic shell responses
-   * Handles any command without predefined responses
-   * Maintains conversation context for consistent sessions
+We utilize the ELK Stack (Elasticsearch, Logstash, Kibana) combined with Filebeat to transform raw attack logs into visual intelligence.
 
-For both settings:
+[ Cowrie JSON Logs ] ──► [ Filebeat ] ──► [ Logstash Ingestion ] ──► [ Elasticsearch ] ──► [ Kibana Dashboard ]
 
-* Session logs are stored in a `UML Compatible <http://user-mode-linux.sourceforge.net/>`_  format for easy replay with the `playlog` utility.
-* SFTP and SCP support for file upload
-* Support for SSH exec commands
-* Logging of direct-tcp connection attempts (ssh proxying)
-* Forward SMTP connections to SMTP Honeypot (e.g. `mailoney <https://github.com/awhitehatter/mailoney>`_)
-* JSON logging for easy processing in log management solutions
+مقتطف الرمز
+
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│             [ PLACEHOLDER: Figure 2 Image ]            │
+│        data_aggregation_visualization_pipeline.png     │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+Figure 2: Data Aggregation and Visualization Pipeline
+🛠️ Core Features & Engineering
+1. Filesystem Engineering
+
+We used fsctl.py to build a convincing directory structure that mimics a live production server, including common system paths and application-specific directories.
+مقتطف الرمز
+
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│             [ PLACEHOLDER: Figure 3 Image ]            │
+│              customized_virtual_filesystem.png         │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+Figure 3: Customized virtual filesystem showing realistic user home directories.
+2. Strategic Honeyfiles
+
+Decoy files (e.g., .env, config.php, backup.sql) containing fake but realistic credentials are planted to lure attackers into revealing their specific objectives.
+مقتطف الرمز
+
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│             [ PLACEHOLDER: Figure 4 Image ]            │
+│                     planted_honeyfile.png              │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+Figure 4: Example of a planted honeyfile with fake API keys and DB credentials.
+3. Threat Visualization
+
+All captured interactions are visualized through custom Kibana dashboards, allowing for immediate identification of attack patterns and originations.
+مقتطف الرمز
+
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│             [ PLACEHOLDER: Figure 5 Image ]            │
+│            realtime_threat_intel_dashboard.png         │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+Figure 5: Real-time Threat Intelligence Dashboard.
+🚦 Getting Started
+Prerequisites
+
+    Docker & Docker Compose
+
+    Linux Environment (Recommended)
 
 Installation
-*****************************************
 
-There are currently three ways to install Cowrie: `git clone`, `Docker` and `pip`.
-`Docker` is the easiest to try and run, but to configure and modify you'll need a good understanding of containers and volumes.
-`git clone` is recommended if you want to change the configuration of the honeypot.
-`pip` mode is still under development.
+    Clone the Repo:
+    Bash
 
-Docker
-*****************************************
+    git clone [https://github.com/black1892004-cloud/Containerized-Secure-SSH-Honeypot-for-Threat-Intelligence.git](https://github.com/black1892004-cloud/Containerized-Secure-SSH-Honeypot-for-Threat-Intelligence.git)
+    cd Containerized-Secure-SSH-Honeypot-for-Threat-Intelligence
 
-`Docker images <https://hub.docker.com/repository/docker/cowrie/cowrie>`_ are available on Docker Hub.
+    Deploy with Docker Compose:
+    Bash
 
-* To get started quickly and give Cowrie a try, run::
+    docker-compose up --build -d
 
-    $ docker run -p 2222:2222 cowrie/cowrie:latest
-    $ ssh -p 2222 root@localhost
+    Verify Deployment:
+    Bash
 
-* To just make it locally, run::
+    docker ps
 
-    $ make docker-build
+🛡️ Security & Isolation
 
-PyPI
-*****************************************
+    Non-Root Execution: Cowrie runs as a non-privileged user inside the container.
 
-`Cowrie is available on PyPI <https://pypi.org/project/cowrie>`_, to install run::
+    Network Isolation: Docker bridge networking restricts the honeypot's visibility of the host network.
 
-    $ pip install cowrie
-    $ twistd cowrie
+    Stateless Operation: Container restarts revert any unauthorized changes made by attackers.
 
-When installed this way, it will behave differently from having a full directory download.
+🤝 Contribution & License
 
-This is still in beta and may not work as expected, `git clone` or `docker` methods are preferred.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Requirements
-*****************************************
+This project is licensed under the MIT License.
 
-Software required to run locally:
-
-* Python 3.10+
-* python-virtualenv
-
-Files of interest:
-*****************************************
-
-* `etc/cowrie.cfg` - Cowrie's configuration file.
-* `etc/cowrie.cfg.dist <https://github.com/cowrie/cowrie/blob/main/etc/cowrie.cfg.dist>`_ - default settings, don't change this file
-* `etc/userdb.txt` - credentials to access the honeypot
-* `src/cowrie/data/fs.pickle` - fake filesystem, this only contains metadata (path, uid, gid, size)
-* `honeyfs/ <https://github.com/cowrie/cowrie/tree/main/honeyfs>`_ - contents for the fake filesystem
-* `honeyfs/etc/issue.net` - pre-login banner
-* `honeyfs/etc/motd <https://github.com/cowrie/cowrie/blob/main/honeyfs/etc/issue>`_ - post-login banner
-* `src/cowrie/data/txtcmds/` - output for simple fake commands
-* `var/log/cowrie/cowrie.json` - audit output in JSON format
-* `var/log/cowrie/cowrie.log` - log/debug output
-* `var/lib/cowrie/tty/` - session logs, replayable with the `playlog` utility.
-* `var/lib/cowrie/downloads/` - files transferred from the attacker to the honeypot are stored here
-
-Commands
-******************************************
-* `cowrie` - start, stop and restart Cowrie
-* `fsctl` - modify the fake filesystem
-* `createfs` - create your own fake filesystem
-* `playlog` - utility to replay session logs
-* `asciinema` - turn Cowrie logs into asciinema files
-
-Contributors
-***************
-
-Many people have contributed to Cowrie over the years. Special thanks to:
-
-* Upi Tamminen (desaster) for all his work developing Kippo on which Cowrie was based
-* Dave Germiquet (davegermiquet) for TFTP support, unit tests, new process handling
-* Olivier Bilodeau (obilodeau) for Telnet support
-* Ivan Korolev (fe7ch) for many improvements over the years.
-* Florian Pelgrim (craneworks) for his work on code cleanup and Docker.
-* Guilherme Borges (sgtpepperpt) for SSH and telnet proxy (GSoC 2019)
-* And many many others.
+Project developed as a Graduation Thesis in Cybersecurity.

@@ -1,4 +1,4 @@
-# 🛡️ ThreatLens: Containerized SSH Honeypot for Threat Intelligence
+# 🛡️ Secure SSH Honeypot Platform for Cyber Threat-Intelligence
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue?logo=docker)](https://www.docker.com/)
@@ -218,7 +218,7 @@ docs/images/dashboard.png
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 ### Prerequisites
 
@@ -232,9 +232,9 @@ docs/images/dashboard.png
 ### Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ThreatLens.git
+git clone https://github.com/speedw124/Secure-SSH-Honeypot-Platform-for-Cyber-Threat-Intelligence
 
-cd ThreatLens
+cd Secure-SSH-Honeypot-Platform-for-Cyber-Threat-Intelligence
 ```
 
 ---

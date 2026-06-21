@@ -1,110 +1,354 @@
-# Containerized Secure SSH Honeypot for Threat Intelligence
+# 🛡️ ThreatLens: Containerized SSH Honeypot for Threat Intelligence
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue?logo=docker)](https://www.docker.com/)
 [![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)](https://www.python.org/)
+[![Cowrie](https://img.shields.io/badge/Cowrie-Honeypot-green)](https://github.com/cowrie/cowrie)
 
-A high-fidelity SSH Honeypot (Cowrie) system engineered with a focus on **Deception Technology** and **Active Defense**. This project utilizes containerization to provide a secure, isolated, and highly realistic environment for capturing and analyzing attacker behavior to gather actionable threat intelligence.
-
----
-
-## 🚀 Project Overview
-
-This project implements a sophisticated decoy system designed to mimic a production Linux server. By meticulously crafting virtual filesystems and user personas, we maximize attacker "dwell time," allowing for the collection of deep insights into their methodologies without risking actual production assets.
-
-### Key Highlights:
-
-*   **High-Fidelity Deception**: Custom-engineered filesystem (`fs.pickle`) and realistic user environments.
-*   **Robust Isolation**: Full containerization using Docker to prevent any potential host compromise.
-*   **Scalable Architecture**: Easily deployable as a single node or a distributed Honeynet.
-*   **Real-time Analytics**: Integrated pipeline for log aggregation and visualization.
+A high-interaction SSH honeypot platform built using **Cowrie**, **Docker**, and the **ELK Stack** to capture, analyze, and visualize attacker behavior. The project leverages deception techniques and secure containerization to collect actionable cyber threat intelligence while maintaining complete isolation from production environments.
 
 ---
 
-## 🏗️ System Architecture
+## 📖 Overview
 
-The system follows a modular architecture where incoming malicious traffic is isolated and analyzed in real-time.
+ThreatLens is designed to simulate a realistic Linux server environment that attracts attackers and records their activities. By providing convincing user accounts, directories, and honeyfiles, the honeypot encourages adversaries to interact with the system, enabling detailed observation of attack patterns, credential usage, command execution, and post-exploitation behavior.
 
-![High-Level Architecture](images/architecture.png)
-*Figure 1: High-Level System Architecture & Traffic Flow*
+### Objectives
 
-### The ELK Data Pipeline
-
-We utilize the ELK Stack (Elasticsearch, Logstash, Kibana) combined with Filebeat to transform raw attack logs into visual intelligence.
-
-![ELK Pipeline](images/elk_pipeline.png)
-*Figure 2: Data Aggregation and Visualization Pipeline*
+* Collect real-world attack data
+* Analyze attacker techniques and procedures
+* Visualize threats through centralized dashboards
+* Provide a secure environment for cybersecurity research
+* Demonstrate practical deception technology and active defense concepts
 
 ---
 
-## 🛠️ Core Features & Engineering
+## ✨ Key Features
 
-### 1. Filesystem Engineering
+### 🎭 High-Fidelity Deception
 
-We used `fsctl.py` to build a convincing directory structure that mimics a live production server, including common system paths and application-specific directories.
+* Realistic Linux filesystem structure
+* Simulated users and home directories
+* Fake credentials and sensitive-looking files
+* Convincing server banners and shell environment
 
-![Filesystem Realism](images/filesystem_users.png)
-*Figure 3: Customized virtual filesystem showing realistic user home directories.*
+### 🐳 Secure Containerization
+
+* Fully isolated Docker deployment
+* Non-root execution
+* Easy deployment and maintenance
+* Reduced risk to host systems
+
+### 📊 Threat Intelligence Collection
+
+* Session recording
+* Command logging
+* Credential harvesting
+* File download monitoring
+* IP tracking and geolocation analysis
+
+### 📈 ELK Stack Integration
+
+* Elasticsearch for log storage
+* Logstash for processing
+* Kibana dashboards for visualization
+* Real-time monitoring and analytics
+
+---
+
+## 🏗️ Architecture
+
+The system follows a layered architecture that captures attacker interactions and transforms raw logs into actionable intelligence.
+
+```text
+Internet
+    │
+    ▼
+┌─────────────────┐
+│ SSH Honeypot    │
+│ (Cowrie)        │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Log Collection  │
+│ (Filebeat)      │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Logstash        │
+│ Processing      │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Elasticsearch   │
+│ Storage         │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Kibana          │
+│ Visualization   │
+└─────────────────┘
+```
+
+### Architecture Diagram
+
+```markdown
+docs/images/architecture.png
+```
+
+Add your architecture screenshot here:
+
+```text
+images/
+├── architecture.png
+├── elk_pipeline.png
+├── dashboard.png
+└── honeyfiles.png
+```
+
+---
+
+## 📂 Project Structure
+
+```bash
+ThreatLens/
+│
+├── docker-compose.yml
+├── Dockerfile
+├── cowrie/
+│   ├── cowrie.cfg
+│   ├── honeyfs/
+│   ├── fs.pickle
+│   └── logs/
+│
+├── elk/
+│   ├── elasticsearch/
+│   ├── logstash/
+│   └── kibana/
+│
+├── filebeat/
+│
+├── scripts/
+│
+├── docs/
+│   └── images/
+│
+└── README.md
+```
+
+---
+
+## 🔧 Honeypot Engineering
+
+### 1. Custom Filesystem
+
+The virtual filesystem is customized to resemble a production Linux server.
+
+Examples include:
+
+```bash
+/home/admin/
+/home/devops/
+/var/www/html/
+/etc/apache2/
+/opt/backups/
+```
+
+This increases attacker engagement and provides richer intelligence data.
+
+---
 
 ### 2. Strategic Honeyfiles
 
-Decoy files (e.g., `.env`, `config.php`, `backup.sql`) containing fake but realistic credentials are planted to lure attackers into revealing their specific objectives.
+Fake but realistic files are intentionally placed throughout the system.
 
-![Honeyfile Example](images/honeyfile_config_php.png)
-*Figure 4: Example of a planted honeyfile with fake API keys and DB credentials.*
+Examples:
 
-### 3. Threat Visualization
+```bash
+.env
+config.php
+database_backup.sql
+credentials.txt
+aws_keys.txt
+```
 
-All captured interactions are visualized through custom Kibana dashboards, allowing for immediate identification of attack patterns and originations.
-
-![Kibana Dashboard](images/kibana_dashboard.png)
-*Figure 5: Real-time Threat Intelligence Dashboard.*
+These files contain fabricated credentials designed to reveal attacker objectives and techniques.
 
 ---
 
-## 🚦 Getting Started
+### 3. User Persona Simulation
+
+Example fake accounts:
+
+```bash
+admin
+devops
+backup
+webadmin
+developer
+```
+
+These accounts make the environment appear authentic and encourage further interaction.
+
+---
+
+## 📊 Threat Monitoring Dashboard
+
+Collected attack data is visualized using Kibana dashboards.
+
+Metrics include:
+
+* Top attacking IP addresses
+* Geographic distribution
+* Most attempted usernames
+* Most common passwords
+* Frequently executed commands
+* Session timelines
+* Downloaded malware samples
+
+Example Dashboard:
+
+```markdown
+docs/images/dashboard.png
+```
+
+---
+
+## 🚀 Deployment
 
 ### Prerequisites
 
-*   Docker & Docker Compose
-*   Linux Environment (Recommended)
-
-### Installation
-
-1. **Clone the Repo:**
-
-   ```bash
-   git clone https://github.com/black1892004-cloud/Containerized-Secure-SSH-Honeypot-for-Threat-Intelligence.git
-   cd Containerized-Secure-SSH-Honeypot-for-Threat-Intelligence
-   ```
-
-2. **Deploy with Docker Compose:**
-
-   ```bash
-   docker-compose up --build -d
-   ```
-
-3. **Verify Deployment:**
-
-   ```bash
-   docker ps
-   ```
+* Docker
+* Docker Compose
+* Linux Server (Ubuntu Recommended)
+* Minimum 4 GB RAM
 
 ---
 
-## 🛡️ Security & Isolation
+### Clone Repository
 
-*   **Non-Root Execution**: Cowrie runs as a non-privileged user inside the container.
-*   **Network Isolation**: Docker bridge networking restricts the honeypot's visibility of the host network.
-*   **Stateless Operation**: Container restarts revert any unauthorized changes made by attackers.
+```bash
+git clone https://github.com/YOUR_USERNAME/ThreatLens.git
+
+cd ThreatLens
+```
 
 ---
 
-## 🤝 Contribution & License
+### Build Containers
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```bash
+docker-compose build
+```
+
+---
+
+### Start Services
+
+```bash
+docker-compose up -d
+```
+
+---
+
+### Verify Deployment
+
+```bash
+docker ps
+```
+
+Expected services:
+
+```bash
+cowrie
+filebeat
+elasticsearch
+logstash
+kibana
+```
+
+---
+
+## 🔍 Viewing Logs
+
+Cowrie logs:
+
+```bash
+docker logs cowrie
+```
+
+Session logs:
+
+```bash
+cowrie/var/log/cowrie/
+```
+
+Monitor live activity:
+
+```bash
+tail -f cowrie.log
+```
+
+---
+
+## 🔐 Security Considerations
+
+* Honeypot runs inside isolated containers
+* No direct access to host filesystem
+* Non-root service execution
+* Network segmentation recommended
+* Deploy on a dedicated VPS or isolated network
+* Regularly monitor collected malware samples
+
+---
+
+## 📈 Future Enhancements
+
+* Multiple honeypot nodes (Honeynet)
+* Threat intelligence feeds integration
+* Malware sandbox automation
+* Machine learning anomaly detection
+* Real-time alerting via Slack/Discord
+* GeoIP attack mapping
+* Automated IOC extraction
+
+---
+
+## 🧪 Technologies Used
+
+| Technology    | Purpose                    |
+| ------------- | -------------------------- |
+| Cowrie        | SSH/Telnet Honeypot        |
+| Docker        | Containerization           |
+| Python        | Automation & Customization |
+| Elasticsearch | Log Storage                |
+| Logstash      | Log Processing             |
+| Kibana        | Visualization              |
+| Filebeat      | Log Shipping               |
+| Linux         | Deployment Environment     |
+
+---
+
+## 📜 License
+
 This project is licensed under the MIT License.
 
+See the LICENSE file for details.
+
 ---
 
-Project developed as a Graduation Thesis in Cybersecurity.
+## 👨‍💻 Author
+
+Developed as a Cybersecurity Graduation Project focusing on:
+
+* Deception Technology
+* Active Defense
+* Threat Intelligence Collection
+* Honeypot Engineering
+* Security Monitoring
+
+⭐ If you find this project useful, consider giving it a star on GitHub.

@@ -1,0 +1,8 @@
+sysadmin:x:admin
+abdallah:x:abdallah000
+root:x:123456
+mysql:x:sql000
+yousef:x:yousef123
+mohammad:x:mohammad123
+raad:x:raad123
+oracle:x:database

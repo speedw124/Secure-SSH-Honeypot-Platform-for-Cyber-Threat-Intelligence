@@ -1,0 +1,144 @@
+{
+  "index_patterns": ["cowrie-*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "index.codec": "best_compression",
+    "index.refresh_interval": "30s",
+    "index.translog.durability": "async",
+    "index.translog.flush_threshold_size": "512mb"
+  },
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      },
+      "eventid": {
+        "type": "keyword"
+      },
+      "event_type": {
+        "type": "keyword"
+      },
+      "src_ip": {
+        "type": "ip"
+      },
+      "src_port": {
+        "type": "integer"
+      },
+      "dst_ip": {
+        "type": "ip"
+      },
+      "dst_port": {
+        "type": "integer"
+      },
+      "username": {
+        "type": "keyword"
+      },
+      "password": {
+        "type": "keyword"
+      },
+      "command": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "session_id": {
+        "type": "keyword"
+      },
+      "user_input": {
+        "type": "text"
+      },
+      "command_output": {
+        "type": "text"
+      },
+      "login_success": {
+        "type": "boolean"
+      },
+      "login_failure": {
+        "type": "boolean"
+      },
+      "dangerous_command": {
+        "type": "boolean"
+      },
+      "country": {
+        "type": "keyword"
+      },
+      "country_code": {
+        "type": "keyword"
+      },
+      "city": {
+        "type": "keyword"
+      },
+      "latitude": {
+        "type": "geo_point"
+      },
+      "longitude": {
+        "type": "geo_point"
+      },
+      "timezone": {
+        "type": "keyword"
+      },
+      "location": {
+        "type": "geo_point"
+      },
+      "collector": {
+        "type": "keyword"
+      },
+      "honeypot_name": {
+        "type": "keyword"
+      },
+      "honeypot_type": {
+        "type": "keyword"
+      },
+      "pipeline_version": {
+        "type": "keyword"
+      },
+      "tags": {
+        "type": "keyword"
+      },
+      "host": {
+        "properties": {
+          "name": {
+            "type": "keyword"
+          },
+          "ip": {
+            "type": "ip"
+          },
+          "os": {
+            "properties": {
+              "name": {
+                "type": "keyword"
+              },
+              "version": {
+                "type": "keyword"
+              }
+            }
+          }
+        }
+      },
+      "agent": {
+        "properties": {
+          "name": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword"
+          }
+        }
+      },
+      "source": {
+        "type": "keyword"
+      },
+      "environment": {
+        "type": "keyword"
+      }
+    }
+  }
+}

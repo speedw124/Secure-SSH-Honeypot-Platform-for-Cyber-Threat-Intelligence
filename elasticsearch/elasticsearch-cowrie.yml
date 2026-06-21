@@ -1,0 +1,112 @@
+################################################################################
+# Elasticsearch Configuration for Cowrie Honeypot
+# تكوين Elasticsearch لـ Cowrie Honeypot
+################################################################################
+
+# ========================== Cluster Settings ==================================
+cluster.name: cowrie-elk-cluster
+node.name: elasticsearch-cowrie-01
+
+# ========================== Node Settings ====================================
+node.roles: [master, data, ingest]
+
+# ========================== Network Settings =================================
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+# ========================== Discovery Settings ===============================
+discovery.type: single-node
+
+# ========================== Bootstrap Settings ===============================
+bootstrap.memory_lock: false
+
+# ========================== JVM Settings =====================================
+# تم تعيينها في docker-compose.yml
+# -Xms512m -Xmx512m
+
+# ========================== Path Settings ====================================
+path.data: /usr/share/elasticsearch/data
+path.logs: /usr/share/elasticsearch/logs
+
+# ========================== Index Settings ===================================
+# إعدادات الفهرس الافتراضية
+index.number_of_shards: 1
+index.number_of_replicas: 0
+index.codec: best_compression
+
+# ========================== Logging Settings =================================
+logger.level: info
+logger.org.elasticsearch: warn
+logger.org.elasticsearch.transport: debug
+
+# ========================== Slow Log Settings ================================
+index.search.slowlog.threshold.query.warn: 10s
+index.search.slowlog.threshold.query.info: 5s
+index.search.slowlog.threshold.query.debug: 2s
+index.search.slowlog.threshold.query.trace: 500ms
+
+index.indexing.slowlog.threshold.index.warn: 10s
+index.indexing.slowlog.threshold.index.info: 5s
+index.indexing.slowlog.threshold.index.debug: 2s
+index.indexing.slowlog.threshold.index.trace: 500ms
+
+# ========================== Thread Pool Settings =============================
+thread_pool.search.queue_size: 1000
+thread_pool.bulk.queue_size: 300
+thread_pool.index.queue_size: 200
+
+# ========================== Memory Settings ==================================
+indices.memory.index_buffer_size: 30%
+
+# ========================== Refresh Interval ==================================
+# الفترة الزمنية لتحديث الفهرس (تأثير على الأداء)
+index.refresh_interval: 30s
+
+# ========================== Translog Settings ================================
+index.translog.durability: async
+index.translog.flush_threshold_size: 512mb
+
+# ========================== Merge Settings ===================================
+index.merge.scheduler.max_thread_count: 1
+
+# ========================== Query Cache Settings ==============================
+indices.queries.cache.size: 15%
+
+# ========================== Security Settings (اختياري) =======================
+# xpack.security.enabled: false
+# xpack.security.enrollment.enabled: false
+
+# ========================== Monitoring Settings (اختياري) =====================
+# xpack.monitoring.enabled: false
+
+# ========================== ML Settings (اختياري) =============================
+# xpack.ml.enabled: false
+
+# ========================== Watcher Settings (اختياري) =========================
+# xpack.watcher.enabled: false
+
+# ========================== Graph Settings (اختياري) ===========================
+# xpack.graph.enabled: false
+
+# ========================== Rollup Settings (اختياري) ==========================
+# xpack.rollup.enabled: false
+
+# ========================== ILM Settings (اختياري) =============================
+# xpack.ilm.enabled: false
+
+# ========================== SQL Settings (اختياري) =============================
+# xpack.sql.enabled: false
+
+# ========================== Canvas Settings (اختياري) ==========================
+# xpack.canvas.enabled: false
+
+# ========================== Reporting Settings (اختياري) =======================
+# xpack.reporting.enabled: false
+
+# ========================== Action Settings ===================================
+action.auto_create_index: "+cowrie-*,.watches,-apm-*,-.*"
+action.destructive_requires_name: true
+
+# ========================== Ingest Settings ==================================
+ingest.geoip.cache_size: 1000

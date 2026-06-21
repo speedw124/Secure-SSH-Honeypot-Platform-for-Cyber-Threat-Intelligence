@@ -1,0 +1,15 @@
+# --- PRODUCTION ENVIRONMENT ---
+DEBUG=False
+SECRET_KEY=django-insecure-7v#@k!9m*2pLz5xR8qW
+DATABASE_URL=postgres://prod_user:K3y_St0r3_99@10.0.5.25:5432/main_db
+
+# Cloud Services
+AWS_ACCESS_KEY_ID=AKIAJ2X
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCY
+
+# Communication
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/T000/B000/XXXX
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=redis_p@ss_v3ry_str0ng
+

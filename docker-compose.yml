@@ -1,0 +1,118 @@
+services:
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: cowrie
+    restart: always
+    ports:
+      - "2222:2222"
+    volumes:
+
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./cowrie_data/log:/var/log/cowrie
+      - ./cowrie_data/etc/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
+      - ./cowrie_data/etc/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt:ro
+      - ./cowrie_data/downloads:/cowrie/cowrie-git/var/lib/cowrie/downloads
+      - ./cowrie_data/honeyfs:/cowrie/cowrie-git/honeyfs:ro
+      - ./cowrie_data/etc/fs.pickle:/cowrie/cowrie-git/share/cowrie/fs.pickle:ro
+      - ./cowrie_data/etc/fs.pickle:/cowrie/cowrie-git/src/cowrie/data/fs.pickle:ro
+
+    networks:
+      - honeynet
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - honeynet
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.9
+    container_name: logstash
+    restart: always
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    environment:
+      - LS_JAVA_OPTS=-Xmx256m -Xms256m
+    depends_on:
+      - elasticsearch
+    networks:
+      - honeynet
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.17.9
+    container_name: filebeat
+    restart: always
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat/filebeat-entrypoint.sh:/filebeat-entrypoint.sh:ro
+      - ./cowrie_data/log:/var/log/cowrie:ro
+    entrypoint: /bin/bash
+    command: /filebeat-entrypoint.sh
+    depends_on:
+      - logstash
+    networks:
+      - honeynet
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    container_name: kibana
+    restart: always
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - honeynet
+
+  kibana-setup:
+    image: curlimages/curl:latest
+    container_name: kibana-setup
+    depends_on:
+      - kibana
+    networks:
+      - honeynet
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "
+      echo 'Waiting for Kibana to be ready...';
+      until curl -s http://kibana:5601/api/status | grep -q 'available'; do
+        sleep 5;
+      done;
+      echo 'Kibana is up! Creating index pattern...';
+      curl -X POST 'http://kibana:5601/api/saved_objects/index-pattern/cowrie' \
+        -H 'kbn-xsrf: true' \
+        -H 'Content-Type: application/json' \
+        -d '{\"attributes\": {\"title\": \"cowrie-*\", \"timeFieldName\": \"@timestamp\"}}';
+      echo 'Index pattern created successfully!';
+      "
+
+networks:
+  honeynet:
+    driver: bridge
+
+volumes:
+  es_data:
+    driver: local

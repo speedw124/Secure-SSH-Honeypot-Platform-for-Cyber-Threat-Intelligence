@@ -1,0 +1,2 @@
+{"attributes":{"fieldAttrs":"{\"input.type\":{\"count\":1},\"eventid\":{\"count\":1}}","fields":"[]","runtimeFieldMap":"{}","timeFieldName":"@timestamp","title":"cowrie-*","typeMeta":"{}"},"coreMigrationVersion":"7.17.9","id":"b6734690-3270-11f1-852b-a7d4695339db","migrationVersion":{"index-pattern":"7.11.0"},"references":[],"type":"index-pattern","updated_at":"2026-04-07T14:53:37.649Z","version":"WzQ0OTQsOV0="}
+{"excludedObjects":[],"excludedObjectsCount":0,"exportedCount":1,"missingRefCount":0,"missingReferences":[]}

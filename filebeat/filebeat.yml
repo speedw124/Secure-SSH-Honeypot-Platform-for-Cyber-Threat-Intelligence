@@ -1,0 +1,81 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/cowrie/cowrie.json 
+  json.keys_under_root: true
+  json.overwrite_keys: true
+  
+  # Add custom fields
+  fields:
+    log_type: cowrie
+    environment: production
+  
+  # Ignore old files
+  ignore_older: 24h
+  
+  # Close file after reading
+  close_eof: true
+  
+  # Backoff settings
+  backoff: 1s
+  max_backoff: 10s
+
+#========================== General settings ==========================
+
+# The name of the shipper that will append its name to the events
+name: filebeat-cowrie-01
+
+# The tags of the shipper are included in their own field with each transaction
+tags: ["cowrie", "honeypot", "security"]
+
+# Optional fields that you can specify to add additional information
+fields:
+  datacenter: lab
+  project: cowrie-analysis
+
+#========================== Logging ==========================
+
+# Sets log level. The default log level is info.
+logging.level: info
+
+# Log to files
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+#========================== Logstash output ==========================
+
+output.logstash:
+  # The Logstash hosts (use Docker service name)
+  hosts: ["logstash:5044"]
+  
+  # The number of times a particular event is tried to be sent to Logstash
+  max_retries: 3
+  
+  # The maximum number of events to bulk in a single Logstash request
+  bulk_max_size: 2048
+  
+  # Backoff settings
+  backoff.init: 1s
+  backoff.max: 60s
+  
+  # Optional index name
+  index: 'filebeat-cowrie'
+  
+  # The number of workers per Logstash host
+  worker: 1
+
+#========================== Processors ==========================
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_docker_metadata: ~
+
+#========================== Monitoring ==========================
+
+# Monitoring
+monitoring.enabled: false

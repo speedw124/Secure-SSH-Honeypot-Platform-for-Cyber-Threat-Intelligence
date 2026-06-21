@@ -1,0 +1,9 @@
+services:
+  web_app:
+    image: nginx:latest
+    ports: ["80:80"]
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd_Admin_99
+

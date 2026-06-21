@@ -1,0 +1,6 @@
+apt-get update && apt-get upgrade -y
+ufw allow 2222/tcp
+tail -f /var/log/auth.log
+useradd -m sysadmin
+passwd sysadmin
+
